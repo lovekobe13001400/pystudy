@@ -1,8 +1,1 @@
-apython
-bpython
-cpython
-dpyton
-dfe
-pyton
-python
-ee
+write wt
