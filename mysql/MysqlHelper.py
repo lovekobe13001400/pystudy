@@ -12,8 +12,8 @@ class MysqlHelper():
         self.cursor.close()
         self.conn.close()
 
-    def insert(self,sql,params=()):
-        return self.__edit(sql,params)
+    def insert(self,sql):
+        return self.__insert(sql)
 
     def get_one(self,sql,params=()):
         result=None
@@ -48,5 +48,18 @@ class MysqlHelper():
             self.conn.commit()
         except Exception as e:
             print(e)
-        return count
+        return self.conn.insert_id()
+    def __insert(self,sql):
+        id = 0
+        try:
+            self.cursor.execute(sql)
+            id = self.conn.insert_id()
+            self.conn.commit()
+        except Exception as e:
+            print(e)
+        return id
+if __name__ == '__main__':
+  db = MysqlHelper()
+  id = db.insert("insert into tan_stock_content VALUES (null,'aa','2018-01-01',1)")
+  print(id)
 # 获取游标
