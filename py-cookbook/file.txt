@@ -1,9 +1,0 @@
-python
-apython
-bpython
-cpython
-dpyton
-dfe
-pyton
-python
-ee
