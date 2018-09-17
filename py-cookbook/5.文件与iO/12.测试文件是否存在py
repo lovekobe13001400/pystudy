@@ -1,0 +1,25 @@
+#
+
+import os
+os.path.exists('../abcd.txt')#false
+
+os.path.exists('../file.txt')#True
+
+
+#是否是文件
+os.path.isfile('../file.txt')#True
+
+#是否是目录
+os.path.isdir('../file.txt')#True
+
+#符号链接（软链接）
+os.path.islink('../')
+
+#硬链接
+os.path.realpath('/usr/local/bin/python3')
+
+#文件大小
+os.path.getsize('../file.txt')
+#修改日期
+os.path.getmtime('../file.txt')
+
