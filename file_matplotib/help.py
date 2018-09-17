@@ -163,7 +163,7 @@ def all_half_slope(x,y):
 def stock_today(sn=1):
     offset = sn-1
     today  = datetime.datetime.now().strftime('%Y-%m-%d')
-
+    today = '2018-09-14'
     sql = "SELECT * from tan_stock_content WHERE date='%s' order by id desc LIMIT %s,1"%(today,offset)
     # print(sql)
     db = MysqlHelper()
