@@ -1,5 +1,9 @@
 # !/usr/bin/env python
 #coding=utf-8
+'''
+周一 到 周五 14:20开始爬数据
+
+'''
 import sys
 import threading,time
 import datetime
@@ -7,6 +11,7 @@ import urllib.request
 import json
 sys.path.append('..')
 from online import help
+from online import help2
 from online.StockHelper import StockHelper
 conf = help.getConfig()
 stock_helper = StockHelper()
@@ -47,7 +52,7 @@ def getContent(threa_no):
         while True:
             price_link = 'http://d.10jqka.com.cn/v6/time/hs_%s/last.js'%(sid)
             price_content = stock_helper.getStockMoneyPoints(price_link,handler_obj=handler_obj)
-
+            #print(price_content)
 
             money_content = ""
             #正常获取
@@ -58,11 +63,11 @@ def getContent(threa_no):
                     handler_obj[scheme] = ip + ':' + port
                     continue
                 #入库
-                sql = "insert into tan_stock_content VALUES (null,'%s','%s','%s','%s')"%(sid,price_content,money_content,today)
-                #加锁
-                mylock.acquire()
-                content_id = stock_helper.insertStockRecord(sql)
-                mylock.release()
+                # sql = "insert into tan_stock_content VALUES (null,'%s','%s','%s','%s',0)"%(sid,price_content,money_content,today)
+                # #加锁
+                # mylock.acquire()
+                # content_id = stock_helper.insertStockRecord(sql)
+                # mylock.release()
                 is_success = 1
                 break
             else:
@@ -83,11 +88,21 @@ def getContent(threa_no):
                         handler_obj[scheme] = ip + ':' + port
                         continue
                     # 入库
-                    sql = "UPDATE tan_stock_content set money_content='%s' where id=%s" % (money_content,content_id)
-                    # 加锁
+                    # sql = "UPDATE tan_stock_content set money_content='%s' where id=%s" % (money_content,content_id)
+                    # # 加锁
+                    # mylock.acquire()
+                    # stock_helper.updateStock(sql)
+                    # mylock.release()
+                    #已获取price_content,money_content
+                    price_content,money_content = help2.should_watch(sid,price_content,money_content)
+                    print('----------------------')
+                    print(price_content)
+                    sql = "insert into tan_watch_content VALUES (null,'%s','%s','%s','%s')"%(sid,price_content,money_content,today)
+                    #加锁
                     mylock.acquire()
-                    stock_helper.updateStock(sql)
+                    content_id = stock_helper.insertStockRecord(sql)
                     mylock.release()
+                    is_success = 1
                     break
                 else:
                     ip, port, scheme = randomIp()
@@ -100,5 +115,7 @@ mylock = threading.Lock()
 for i in range(20):
     t1 = threading.Thread(target=getContent,args=(i,))
     t1.start()
+
+
 
 
