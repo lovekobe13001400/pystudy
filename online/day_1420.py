@@ -94,14 +94,15 @@ def getContent(threa_no):
                     # stock_helper.updateStock(sql)
                     # mylock.release()
                     #已获取price_content,money_content
-                    price_content,money_content = help2.should_watch(sid,price_content,money_content)
-                    print('----------------------')
-                    print(price_content)
-                    sql = "insert into tan_watch_content VALUES (null,'%s','%s','%s','%s')"%(sid,price_content,money_content,today)
-                    #加锁
-                    mylock.acquire()
-                    content_id = stock_helper.insertStockRecord(sql)
-                    mylock.release()
+                    money_all_half_slope, price_all_half_slope = help2.should_watch(sid,price_content,money_content)
+                    dif1 = round(money_all_half_slope[0] - price_all_half_slope[0], 2)
+                    dif2 = round(money_all_half_slope[1] - price_all_half_slope[1], 2)
+                    if dif1>0.3 and dif2>0:
+                        sql = "insert into tan_watch_content VALUES (null,'%s','%s','%s','%s')"%(sid,price_content,money_content,today)
+                        #加锁
+                        mylock.acquire()
+                        content_id = stock_helper.insertStockRecord(sql)
+                        mylock.release()
                     is_success = 1
                     break
                 else:
